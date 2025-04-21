@@ -12,7 +12,7 @@ from Quartz.CoreGraphics import (
     kCGHIDEventTap,
     kCGScrollEventUnitLine
 )
-from Quartz import CGDisplayBounds, CGMainDisplayID
+
 import pyautogui
 
 # ==== CONFIG ====
