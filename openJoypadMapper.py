@@ -17,8 +17,8 @@ import pyautogui
 
 # ==== CONFIG ====
 FPS           = 60       # loop at display refresh
-MAX_SPEED     = 500.0    # px/sec for cursor movement
-SCROLL_SPEED  = 800.0    # scroll lines/sec
+MAX_SPEED     = 700.0    # px/sec for cursor movement
+SCROLL_SPEED  = 20.0    # scroll lines/sec
 DEAD_ZONE     = 0.10     # ignore tiny stick deflections
 DOUBLE_CLICK_THRESHOLD = 0.3  # seconds
 # =====================
@@ -160,7 +160,9 @@ try:
                     pyautogui.click(button='right')
                 elif b in button_to_key:
                     key = button_to_key[b]
-                    if cmd_down:
+                    if cmd_down and opt_down:
+                        pyautogui.hotkey('command', 'option', key)
+                    elif cmd_down:
                         pyautogui.hotkey('command', key)
                     elif opt_down:
                         pyautogui.hotkey('option', key)
