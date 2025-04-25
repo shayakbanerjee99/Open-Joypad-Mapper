@@ -1,6 +1,7 @@
 import pygame
 import sys
 import time
+import subprocess
 from Quartz.CoreGraphics import (
     CGEventCreateMouseEvent,
     CGEventPost,
@@ -109,6 +110,18 @@ def quartz_mouse_up():
         CGEventPost(kCGHIDEventTap, evt)
     except Exception as e:
         print(f"Mouse up error: {e}")
+        
+def increase_volume():
+    try:
+        subprocess.run(["osascript", "-e", "set volume output volume (output volume of (get volume settings) + 5) --100%"], check=True)
+    except Exception as e:
+        print(f"Error increasing volume: {e}")
+
+def decrease_volume():
+    try:
+        subprocess.run(["osascript", "-e", "set volume output volume (output volume of (get volume settings) - 5) --100%"], check=True)
+    except Exception as e:
+        print(f"Error increasing volume: {e}")
 
 
 def quartz_double_click():
@@ -186,6 +199,9 @@ try:
             raw_y = joy.get_axis(1)
             raw_sv = joy.get_axis(3)
             raw_sh = joy.get_axis(2)
+            raw_vol_down = joy.get_axis(4)
+            raw_vol_up = joy.get_axis(5)
+            
         except pygame.error:
             joy = None
             continue
@@ -194,7 +210,15 @@ try:
         raw_y = 0.0 if abs(raw_y) < DEAD_ZONE else raw_y
         raw_sv = 0.0 if abs(raw_sv) < DEAD_ZONE else raw_sv
         raw_sh = 0.0 if abs(raw_sh) < DEAD_ZONE else raw_sh
-
+        raw_vol_up = 0.0 if abs(raw_vol_up) < DEAD_ZONE else raw_vol_up
+        raw_vol_down = 0.0 if abs(raw_vol_down) < DEAD_ZONE else raw_vol_down
+        
+        if raw_vol_up > 0:  # Trigger volume increase if axis 5 is moved
+            increase_volume()
+        
+        if raw_vol_down > 0:  # Trigger volume increase if axis 5 is moved
+            decrease_volume()
+        
         x_accum += raw_x * MAX_SPEED * dt
         y_accum += raw_y * MAX_SPEED * dt
         move_x = int(x_accum)
